@@ -41,13 +41,20 @@ public class FilmeController : ControllerBase
     /// </summary>
     /// <param name="skip">A partir de qual contagem de filmes os resultados devem ser coletados</param>
     /// <param name="take">Quantos filmes devem ser retornados</param>
+    /// <param name="nomeCinema">Filtro opcional para mostrar apenas filmes que possuem sessoes no cinema de nome correspondente</param>
     /// <returns>IActionResult</returns>
     /// <response code="200">Caso a consulta tenha sido feita com sucesso</response>
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public IEnumerable<ReadFilmeDto> RecuperaFilmes( [FromQuery] int skip = 0, [FromQuery] int take = 50)
+    public IEnumerable<ReadFilmeDto> RecuperaFilmes( [FromQuery] int skip = 0, [FromQuery] int take = 50, [FromQuery] string? nomeCinema = null)
     {
-        return _mapper.Map<List<ReadFilmeDto>>(_context.Filmes.Skip(skip).Take(take));
+        if(nomeCinema == null)
+        {
+            return _mapper.Map<List<ReadFilmeDto>>(_context.Filmes.Skip(skip).Take(take)).ToList();
+        }
+        return _mapper.Map<List<ReadFilmeDto>>(_context.Filmes.Skip(skip).Take(take)
+            .Where(filme => filme.Sessoes
+                .Any(sessao => sessao.Cinema.Nome == nomeCinema))).ToList();
     }
 
     /// <summary>

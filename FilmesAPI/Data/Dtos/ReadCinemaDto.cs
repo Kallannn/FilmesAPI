@@ -10,5 +10,7 @@ namespace FilmesAPI.Data.Dtos
         [Required(ErrorMessage = "O Nome é obrigatório.")]
         public string Nome { get; set; }
         public ReadEnderecoDto ReadEnderecoDto { get; set; }
+
+        public ICollection<ReadSessaoDto> Sessoes { get; set; }
     }
 }
